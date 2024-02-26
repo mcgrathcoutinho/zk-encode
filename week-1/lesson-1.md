@@ -161,7 +161,7 @@ In a finite field of order q, the polynomial Xq − X has all q elements of the 
 
 As we delve more into zero knowledge proofs and dig into the theory, we'll find out that it's pretty much all about polynomials. One of the very useful things we do with polynomials is to look at their roots and simplify them by expressing them in a certain way. 
 
-**Group Homomorphisms**
+#### Group Homomorphisms
 
 Another terminology that we'll come across is the idea of homomorphisms.
 
