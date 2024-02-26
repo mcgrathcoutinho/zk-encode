@@ -32,7 +32,7 @@ Fields are denoted by $F$.
 
 The set of numbers we are particularly interested in is represented by $Z^*_p$ (read as Z subscript p with an asterisk). This is a finite field of integers (which means there is a maximum value). The maximum value is 1 less than p (a prime number). When we do arithmetic for that field, we do it mod (modulus) that prime number. The * represents special properties of the field. In short, it is a representation of a finite field of integers mod prime p with multiplicative inverses.
 
-**Why are we interested in this particular field?**
+**[2.1.1] Why are we interested in this particular field?**
 
 It makes our lives easier. We use finite fields for cryptography, because elements have “short”, exact representations and useful properties.
 
@@ -67,16 +67,16 @@ To be considered a group, this combination needs to have certain properties. Bel
   For each a in G, there exists an element b in G, commonly denoted a−1 (or −a, if the operation
   is denoted "+"), such that a • b = b • a = e, where e is the identity element.
 
-**Sub groups**
+**[2.3.1] Sub groups**
 
 If a subset of the elements in a group also satisfies the group properties, then that is a subgroup of the original group.
 
-**Cyclic groups and generators**
+**[2.3.2] Cyclic groups and generators**
 
 A finite group can be cyclic. That means it has a generator element. If you start at any point and apply the group operation with the generator as argument a certain number of times, you go
 around the whole group and end in the same place.
 
-**Finding an inverse**
+**[2.3.3] Finding an inverse**
 
 From Fermat's little theorem (way to find inverse element in a group where the operation is multiplication a.k.a multiplicative inverse).
 
@@ -94,7 +94,7 @@ The final answer is 4 since we apply modulo 7 on 32 i.e. 32 mod p = 32 mod 7 = 4
 
 This is easy to verify: $a * a^{-1}$ = 2 x 4 ≡ 8 (mod 7) = 1 (which is the identity element).
 
-**Equivalance classes**
+**[2.3.4] Equivalance classes**
 
 Modular arithmetic and inverses splits up our number space into what are called equivalence classes.
 
@@ -128,13 +128,13 @@ inverse of a, such that a + (−a) = 0.
 5. Multiplicative inverses: for every a ≠ 0 in F, there exists an element in F, denoted by $a^{−1}$, called the multiplicative inverse of a, such that a · $a^{−1}$ = 1.
 6. Distributivity of multiplication over addition: a · (b + c) = (a · b) + (a · c).
 
-**What is the difference between groups and fields?**
+**[2.4.1] What is the difference between groups and fields?**
 
 Fields are similar to groups just that we have an extra operation. Fields can be thought of an extension of what we do with groups. 
 
 In ZK technology/proving systems, we tend to work with finite fields.
 
-**Finite fields and generators**
+**[2.4.2] Finite fields and generators**
 
 A finite field is a field with a finite set of elements, such as the set of integers mod p where p is a prime number.
 
@@ -167,7 +167,7 @@ In a finite field of order q, the polynomial $X^q − X$ has all q elements of t
 
 As we delve more into zero knowledge proofs and dig into the theory, we'll find out that it's pretty much all about polynomials. One of the very useful things we do with polynomials is to look at their roots and simplify them by expressing them in a certain way. 
 
-**Group Homomorphisms**
+**[2.4.3] Group Homomorphisms**
 
 Another terminology that we'll come across is the idea of homomorphisms.
 
