@@ -1,6 +1,6 @@
 # Overview / Maths & Cryptography Introduction
 
-## Some simple quotes before jumping in:
+## [1] Some simple quotes before jumping in:
 
 `"Human dignity demands that personal information, like medical and forensic data, be hidden from
 the public. But veils of secrecy designed to preserve privacy may also be abused to cover up lies
@@ -14,11 +14,11 @@ fixes everything with no context of its current limitation." - 0xMisaka`
 1. ZK can help reduce abuse in systems as well as help with privacy and human dignity due to the zero knowledge aspect. 
 2. Although the ZK buzzword sounds cool, there are scenarios where it can be applied well (good use case) and where it cannot be applied well. 
 
-## Introductory Maths 
+## [2] Introductory Maths 
 
 This section contains various mathematical concepts/terminologies (not a specific branch of mathematics) that are relevant to understanding ZK.
 
-### Numbers
+### [2.1] Numbers
 
 When using ZK technology, we restrict ourselves in the types of numbers we use. Usually, we stick with integers. There are other sets than those mentioned below: 
 
@@ -36,7 +36,7 @@ The set of numbers we are particularly interested in is represented by $Z^*_p$ (
 
 It makes our lives easier. We use finite fields for cryptography, because elements have “short”, exact representations and useful properties.
 
-### Modular Arithmetic
+### [2.2] Modular Arithmetic
 
 Modular Arithmetic is sometimes referred to as "clock math" because of how numbers wrap around. 
 
@@ -48,7 +48,7 @@ When we write n mod k we mean simply the remainder when n is divided by k. Thus,
 
 The remainder should be positive.
 
-### Group Theory
+### [2.3] Group Theory
 
 The concept of group theory is really abstract but the terms are usually used in ZK technology.
 
@@ -112,7 +112,7 @@ x could be 6, 13, 20 ...
 
 This gives us the basis for a one way function (many-to-one function).
 
-### Fields
+### [2.4] Fields
 
 A field is a set of say Integers together with two operations called addition and multiplication. For example, set of Real Numbers under addition and multiplication or set of
 Integers mod a prime number with addition and multiplication.
@@ -179,5 +179,5 @@ if ⋅ is an operation of the structure (here a binary operation), then
 f(x ⋅ y) = f(x) ⋅ f(y)
 
 
-## Cryptography Background
+## [3] Cryptography Background
 
