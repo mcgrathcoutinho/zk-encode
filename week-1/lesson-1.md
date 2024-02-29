@@ -16,7 +16,7 @@ fixes everything with no context of its current limitation." - 0xMisaka`
 
 ## [2] Introductory Maths 
 
-This section contains various mathematical concepts/terminologies (not a specific branch of mathematics) that are relevant to understanding ZK.
+This section contains various mathematical concepts/terminologies (not a specific branch of mathematics) that are relevant to understanding ZK. Think of it like a ZK cryptographer's toolbox. 
 
 ### [2.1] Numbers
 
@@ -180,4 +180,192 @@ f(x ⋅ y) = f(x) ⋅ f(y)
 
 
 ## [3] Cryptography Background
+
+### Hash functions
+
+Hash functions are one-way functions. For the same input, you receive the same digest. For different inputs, you receive different outputs/digests (extremely low-probability of hash collisions).
+
+Input => Hash Function => Digest
+
+It's easy to go from input to digest but not the other way around. The only way to do this is through brute force and trying out all possibilities. 
+
+### Encryption
+
+**Symmetric Encryption**
+
+Alice and Bob encrypt and decrypt messages using a shared key.
+
+**Asymmetric Encryption**
+
+Both Alice and Bob have a public-private key pair. 
+
+1. Messaging: Alice encrpyts a message using Bob's public key and bob decrypts it using his private key.
+2. Alice signs a message with her private key and Bob decrypts it using her public key.
+
+### Verifiable Random Functions
+
+A Verifiable Random Function (VRF) is a cryptographic primitive (function) that maps inputs to verifiable
+pseudorandom outputs
+
+A better explanation about these can be found [here](https://medium.com/algorand/algorand-releases-first-open-source-code-of-verifiable-random-function-93c2960abd61).
+
+### Elliptic Curves
+
+People choose a particular curve because it provides useful properties to the system they're building on that curve (for example, maybe some shortcuts or good performance etc). 
+
+An elliptic curve is a set of points $(x, y)$ that satisfy an equation such as:
+
+$y^2 = x^3 + ax + b$
+
+where a and b are constants.
+
+The points on the curve obey the group axioms since the curve is a group itself.
+
+For certain equations they will satisfy the group axioms
+ - every two points can be added to give a third point (closure);
+ - it does not matter in what order the two points are added (commutatitivity);
+ - if you have more than two points to add, it does not matter which ones you add first either (associativity);
+ - there is an identity element (the point at infinity);
+
+We find that some curves do indeed form a group under the "point addition" operation.
+Point addition combines two points on the curve to produce a third point on the curve.
+The point addition operation has special rules based on the geometric properties of elliptic curves,
+which ensure that the result of the addition is also a point on the curve.
+Point addition is geometrically motivated, and it allows us to define scalar multiplication, which is
+the basis for elliptic curve cryptography.
+
+### Scalar Multiplication
+
+Scalar multiplication is an operation in which a point on an elliptic curve is added to itself a certain number of times. The result of this operation is another point on the elliptic curve.
+
+Given an elliptic curve E defined by the equation $y^2 = x^3 + ax + b$ (a.k.a Weierstrass form), where $a$ and $b$ are constants, and a point $P(x, y)$ on the curve $E$, scalar multiplication is defined as follows:
+
+$kP = P + P+. . . +P (k times)$
+
+where $k$ is a scalar and the addition operation is the point addition operation defined on the elliptic curve.
+
+In short, scalar multiplication is repetitive addition.
+
+### Roots of Unity
+
+Recall, over a finite field $F_p$, where $p$ is a prime number, an elliptic curve has a finite number of points (including a special "point at infinity" denoted as $O$).
+
+The set of points on an elliptic curve forms a group under point addition
+
+Roots of unity are points on the curve that, when added to themselves a certain number of times
+using point addition, result in the identity element $O$.
+
+In other words, for a point $P$ on the elliptic curve, there exists a positive integer $n$ such that:
+
+$nP = P + P+. . . +P (n times) = 1$
+
+Here, $n$ is called the **order** of the point $P$.
+
+The smallest positive integer $n$ for which this condition holds is the order of the point $P$.
+
+### Polynomial Introduction
+
+A polynomial is an expression that can be built from constants and variables by means of addition,
+multiplication and exponentiation to a non-negative integer power.
+
+e.g. $3x^2 + 4x + 3$
+
+Quote from Vitalik Buterin
+"There are many things that are fascinating about polynomials. But here we are going to zoom in
+on a particular one: polynomials are a single mathematical object that can contain an
+unbounded amount of information (think of them as a list of integers and this is obvious)."
+Furthermore, a **single equation between polynomials can represent an unbounded number of
+equations between numbers**.
+
+#### Roots of a polynomial
+
+For a polynomial $P$ of a single variable $x$ in a field $K$ and with coefficients in that field, the root $r$ of $P$ is an element of $K$ such that $P(r) = 0$.
+
+A very useful technique we use in ZK is that:
+
+Using polynomial long division method, we can refactor a polynomial $P(x)$ of degree n if we know one of its root $r$:
+
+$(x − r)(Q(x))$
+
+where
+
+$Q(x)$ is a polynomial of degree $n − 1$.
+
+$Q(x)$ is simply the quotient obtained from the division process; since r is known to be a root of $P(x)$. It is known that the remainder must be zero.
+
+Note: Degree of $n$ means the highest power used on the polynomial $P(x)$.
+
+### Schwartz-Zippel Lemma
+
+Different polynomials are different at most points.
+
+Polynomials have an advantageous property, namely, if we have two non-equal polynomials of
+degree at most d, they can intersect at no more than d points.
+
+Basically, if you evaluate some polynomial at a particular point and you evaluate a different polynomial at the same point, if those polynomials are different they are liable to evaluate to a different value. Another way of saying this is, different polynomials have very few points where they evaluate to the same value.
+
+**Why is this useful?**
+
+It allows us to simply check whether two polynomials are the same or not. This might sound straightforward but when we do our theory around proofs, we often want to do this and hide information. What we often want to do with our proving systems is to check whether two polynomials are equal or not, which is basically checking whether a proof exists or not. 
+
+if $f$ and $g$ are polynomials and are equal, then
+
+$f(x) = g(x)$ for all $x$
+
+if $f$ and $g$ are polynomials and are NOT equal, then
+
+$f(x) ≠ g(x)$ for all pretty much any $x$
+
+### What does it mean to say 2 polynomials are equal?
+
+1. They evaluate to the same value on all points
+2. They have the same coefficients
+
+If we are working with real numbers, these 2 points above would go together, however that is not the case when we are working with finite fields.
+
+For example all elements of a field of size $q$ satisfy the identity
+
+$x^q = x$
+
+The polynomials $X^q$ and $X$ take the same values at all points, but do not have the same coefficients.
+
+### Lagrange Interpolation
+
+There is another way we can think of polynomials and that is through the points produced or evaluations of that polynomial. 
+
+If you didn't have the equation of a polynomial and only had the points it evaluates to, then you can work out the eqn of the polynomial through interpolation. A particular type of interpolation used is Lagrange interpolation. 
+
+### Represenations of Polynomials
+
+We effectively have 2 ways to represent polynomials:
+
+1. Coefficient form
+   
+$f(x) = a_0 + a_1x + a_2x^2 + a_3x^3 . . .$
+
+2. Point value form
+   
+$(x1, y1),(x2, y2), . . .$
+
+We can switch between the two forms by evaluation or interpolation.
+
+## [4] Zero Knowledge Proof Introduction
+
+**What is a zero knowledge proof (ZKP)?**
+
+A loose definition:
+
+It is a proof that there exists or that we know something, plus a zero knowledge aspect, that is the
+person verifying the proof only gains one piece of information - that the proof is valid or invalid.
+
+**Actors in a ZKP system**
+
+Mainly Prover and Verifier.
+
+ - Creator - optional, maybe combined with a prover
+ - Prover
+ - Verifier
+
+The prover proves to the verifier that it knows something without revealing the full information. The verifier verifies this by testing that the proof is correct and that the prover is not lying.
+
 
