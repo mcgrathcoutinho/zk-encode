@@ -363,9 +363,69 @@ person verifying the proof only gains one piece of information - that the proof 
 Mainly Prover and Verifier.
 
  - Creator - optional, maybe combined with a prover
- - Prover
- - Verifier
+ - Prover (trying to get their claim accepted)
+ - Verifier (trying to check that the prover is not cheating in some way)
 
 The prover proves to the verifier that it knows something without revealing the full information. The verifier verifies this by testing that the proof is correct and that the prover is not lying.
 
+Quote from Vitalik Buterin:
 
+"You can make a proof for the statement "I know a secret number such that if you take the word
+‘cow', add the number to the end, and SHA256 hash it 100 million times, the output starts with `0x57d00485aa` ". The verifier can verify the proof far more quickly than it would take for them to run 100 million hashes themselves, and the proof would also not reveal what the secret number is."
+
+### Proving Systems
+
+A statement is a proposition we want to prove. It depends on:
+
+1. Instance variables, which are public.
+2. Witness variables, which are private.
+
+Given the instance variables, we can find a **short proof (succinct)** that we know witness variables that make
+the statement true (possibly without revealing any other information).
+
+What do we require of a proof ?
+
+ - Completeness: there exists an honest prover P that can convince the honest verifier V of any
+correct statement with very high probability.
+ - Soundness: even a dishonest prover P running in super-polynomial time cannot convince an
+honest verifier V of an incorrect statement. Note: P does not necessarily have to run in
+polynomial time, but V does. Super-polynomial time meaning that the dishonest prover would require a huge amount of computational resources and time to prove an incorrect proof the verifier, thus making it infeasbile.
+
+To make our proof zero knowledge we also need 'zero knowledginess'
+
+To oversimplify: represented on a computer, a ZKP is nothing more than a sequence of numbers,
+carefully computed by Peggy, together with a bunch of boolean checks that Victor can run in order
+to verify the proof of correctness for the computation.
+
+A zero-knowledge protocol is thus the mechanism used for deriving these numbers and defining
+the verification checks.
+
+### Interactive VS Non-Interactive Proofs
+
+In the world of blockchains, interactive proofs are not very practical, which is why we use non-interactive proofs (only 1 step - prover proves and verifier either accepts or rejects the proof).
+
+In non-interactive zero knowledge protocols there is no repeated communication between the prover and the verifier. Instead, there is only a single "round", which can be carried out asynchronously.
+
+Using publicly available data, Peggy (prover) generates a proof, which she publishes in a place accessible to Victor (verifier) (e.g. on a distributed ledger).
+
+Following this, Victor can verify the proof at any point in time to complete the “round”. Note that
+even though Peggy produces only a single proof, as opposed to multiple ones in the interactive
+version, the verifier can still be certain that except for negligible probability, she does indeed know the secret she is claiming.
+
+### Succinct VS Non Succinct
+
+Succinctness is necessary only if the medium used for storing the proofs is very expensive and/or if
+we need very short verification times.
+
+### Proof vs Proof of Knowledge
+
+A proof of knowledge is stronger and more useful than just proving the statement is true. For
+instance, it allows me to prove that I know a secret key, rather than just that it exists.
+
+### Argument vs Proof
+
+In a proof, the soundness holds against a computationally unbounded prover and in an argument,
+the soundness only holds against a polynomially bounded prover. Arguments are thus often called "computationally sound proofs".
+
+The Prover and the Verifier have to agree on what they’re proving. This means that both know the
+statement that is to be proven and what the inputs to this statement represent.
