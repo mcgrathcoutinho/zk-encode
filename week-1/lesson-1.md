@@ -181,7 +181,7 @@ f(x ⋅ y) = f(x) ⋅ f(y)
 
 ## [3] Cryptography Background
 
-### Hash functions
+### [3.1] Hash functions
 
 Hash functions are one-way functions. For the same input, you receive the same digest. For different inputs, you receive different outputs/digests (extremely low-probability of hash collisions).
 
@@ -189,7 +189,7 @@ Input => Hash Function => Digest
 
 It's easy to go from input to digest but not the other way around. The only way to do this is through brute force and trying out all possibilities. 
 
-### Encryption
+### [3.2] Encryption
 
 **Symmetric Encryption**
 
@@ -202,14 +202,14 @@ Both Alice and Bob have a public-private key pair.
 1. Messaging: Alice encrpyts a message using Bob's public key and bob decrypts it using his private key.
 2. Alice signs a message with her private key and Bob decrypts it using her public key.
 
-### Verifiable Random Functions
+### [3.3] Verifiable Random Functions
 
 A Verifiable Random Function (VRF) is a cryptographic primitive (function) that maps inputs to verifiable
 pseudorandom outputs
 
 A better explanation about these can be found [here](https://medium.com/algorand/algorand-releases-first-open-source-code-of-verifiable-random-function-93c2960abd61).
 
-### Elliptic Curves
+### [3.4] Elliptic Curves
 
 People choose a particular curve because it provides useful properties to the system they're building on that curve (for example, maybe some shortcuts or good performance etc). 
 
@@ -234,7 +234,7 @@ which ensure that the result of the addition is also a point on the curve.
 Point addition is geometrically motivated, and it allows us to define scalar multiplication, which is
 the basis for elliptic curve cryptography.
 
-### Scalar Multiplication
+### [3.5] Scalar Multiplication
 
 Scalar multiplication is an operation in which a point on an elliptic curve is added to itself a certain number of times. The result of this operation is another point on the elliptic curve.
 
@@ -246,7 +246,7 @@ where $k$ is a scalar and the addition operation is the point addition operation
 
 In short, scalar multiplication is repetitive addition.
 
-### Roots of Unity
+### [3.6] Roots of Unity
 
 Recall, over a finite field $F_p$, where $p$ is a prime number, an elliptic curve has a finite number of points (including a special "point at infinity" denoted as $O$).
 
@@ -263,7 +263,7 @@ Here, $n$ is called the **order** of the point $P$.
 
 The smallest positive integer $n$ for which this condition holds is the order of the point $P$.
 
-### Polynomial Introduction
+### [3.7] Polynomial Introduction
 
 A polynomial is an expression that can be built from constants and variables by means of addition,
 multiplication and exponentiation to a non-negative integer power.
@@ -277,7 +277,7 @@ unbounded amount of information (think of them as a list of integers and this is
 Furthermore, a **single equation between polynomials can represent an unbounded number of
 equations between numbers**.
 
-#### Roots of a polynomial
+#### [3.7.1] Roots of a polynomial
 
 For a polynomial $P$ of a single variable $x$ in a field $K$ and with coefficients in that field, the root $r$ of $P$ is an element of $K$ such that $P(r) = 0$.
 
@@ -295,7 +295,7 @@ $Q(x)$ is simply the quotient obtained from the division process; since r is kno
 
 Note: Degree of $n$ means the highest power used on the polynomial $P(x)$.
 
-### Schwartz-Zippel Lemma
+### [3.8] Schwartz-Zippel Lemma
 
 Different polynomials are different at most points.
 
@@ -316,7 +316,7 @@ if $f$ and $g$ are polynomials and are NOT equal, then
 
 $f(x) ≠ g(x)$ for all pretty much any $x$
 
-### What does it mean to say 2 polynomials are equal?
+### [3.9] What does it mean to say 2 polynomials are equal?
 
 1. They evaluate to the same value on all points
 2. They have the same coefficients
@@ -329,13 +329,13 @@ $x^q = x$
 
 The polynomials $X^q$ and $X$ take the same values at all points, but do not have the same coefficients.
 
-### Lagrange Interpolation
+### [3.10] Lagrange Interpolation
 
 There is another way we can think of polynomials and that is through the points produced or evaluations of that polynomial. 
 
 If you didn't have the equation of a polynomial and only had the points it evaluates to, then you can work out the eqn of the polynomial through interpolation. A particular type of interpolation used is Lagrange interpolation. 
 
-### Represenations of Polynomials
+### [3.11] Represenations of Polynomials
 
 We effectively have 2 ways to represent polynomials:
 
@@ -373,7 +373,7 @@ Quote from Vitalik Buterin:
 "You can make a proof for the statement "I know a secret number such that if you take the word
 ‘cow', add the number to the end, and SHA256 hash it 100 million times, the output starts with `0x57d00485aa` ". The verifier can verify the proof far more quickly than it would take for them to run 100 million hashes themselves, and the proof would also not reveal what the secret number is."
 
-### Proving Systems
+### [4.1] Proving Systems
 
 A statement is a proposition we want to prove. It depends on:
 
@@ -400,7 +400,7 @@ to verify the proof of correctness for the computation.
 A zero-knowledge protocol is thus the mechanism used for deriving these numbers and defining
 the verification checks.
 
-### Interactive VS Non-Interactive Proofs
+### [4.2] Interactive VS Non-Interactive Proofs
 
 In the world of blockchains, interactive proofs are not very practical, which is why we use non-interactive proofs (only 1 step - prover proves and verifier either accepts or rejects the proof).
 
@@ -412,17 +412,17 @@ Following this, Victor can verify the proof at any point in time to complete the
 even though Peggy produces only a single proof, as opposed to multiple ones in the interactive
 version, the verifier can still be certain that except for negligible probability, she does indeed know the secret she is claiming.
 
-### Succinct VS Non Succinct
+### [4.3] Succinct VS Non Succinct
 
 Succinctness is necessary only if the medium used for storing the proofs is very expensive and/or if
 we need very short verification times.
 
-### Proof vs Proof of Knowledge
+### [4.4] Proof vs Proof of Knowledge
 
 A proof of knowledge is stronger and more useful than just proving the statement is true. For
 instance, it allows me to prove that I know a secret key, rather than just that it exists.
 
-### Argument vs Proof
+### [4.5] Argument vs Proof
 
 In a proof, the soundness holds against a computationally unbounded prover and in an argument,
 the soundness only holds against a polynomially bounded prover. Arguments are thus often called "computationally sound proofs".
