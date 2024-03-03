@@ -132,3 +132,131 @@ Specifically, given any program $C$ and public input $x$ a person who knows lamb
 proof $pr2$ such that $V (vk, x, pr2)$ evaluates to true without knowledge of the secret $w$.
 
 Usually, a multi-party computation (MPC) ceremony is used for the setup.
+
+### Polynomials in ZKPs
+
+First part is called Arithmetization, where we take some code to transform that in a number of ways into a polynomial, which helps us verify whether a proof is correct or not. 
+
+If a prover claims to know some polynomial (no matter how large its degree is) that the verifier also
+knows, they can follow a simple protocol to verify the statement:
+
+1. Verifier chooses a random value for x and evaluates his polynomial locally
+2. Verifier gives x to the prover and asks to evaluate the polynomial in question
+3. Prover evaluates her polynomial at x and gives the result to the verifier
+4. Verifier checks if the local result is equal to the prover’s result, and if so then the statement is proven with a high confidence
+
+The reason the statement is proven with a high confidence is due to Schwartz-Zippel Lemma. If polynomials are not equal, it is very unlikely they are going to evaluate to the same thing at a point. It becomes further unlikely if the verifier chooses the value x randomly from a very large field.
+
+Note that Schwartz-Zippel Lemma is interactive. We'll see how we can squash up our proof to make it non-interactive. In the above example, it is easier to think about the internal process between the prover and verifier when it is interactive. 
+
+### Homomorphic Hiding
+
+Another technique we use to hide information but still do evaluation is homomorphic hiding. 
+
+If $E(x)$ is a function with the following properties:
+
+ - Given $E(x)$ it is hard to find $x$
+ - Different inputs lead to different outputs so if $x ≠ y$, $E(x) ≠ E(y)$
+ - Homomorphic aspect - We can compute $E(x + y)$ given $E(x)$ and $E(y)$
+
+The group $Z^*_p$ with operations addition and multiplication allows this.
+
+Here’s a toy example of why Homomorphic Hiding is useful for Zero-Knowledge proofs: Suppose
+Alice wants to prove to Bob she knows numbers $x,y$ such that $x + y = 7$
+
+1. Alice sends $E(x)$ and $E(y)$ to Bob.
+2. Bob computes $E(x + y)$ from these values (which he is able to do since $E$ is an HH).
+3. Bob also computes $E(7)$, and now checks whether $E(x + y) = E(7)$. He accepts Alice’s proof
+only if equality holds.
+
+## Zokrates - a toolbox for zkSNARKs on Ethereum
+
+Zokrates was the first project to allow (easy) creation of proofs on Ethereum. ZoKrates helps you use verifiable computation in your DApp, from the specification of your program in a high level language to generating proofs of computation to verifying those proofs in Solidity.
+
+Documentation [here](https://zokrates.github.io/) and [repo](https://github.com/Zokrates/ZoKrates).
+
+Workflow in Zokrates:
+
+1. The Creator writes and compiles a program in the Zokrates DSL
+2. The Creator / Prover generates a trusted setup for the compiled program
+3. The Prover computes a witness for the compiled program
+4. The Prover generates a proof - Using the proving key, she generates a proof for a computation of the compiled program
+5. The Creator / Prover exports a Verifier - Using the verifying key she generates a Solidity
+contract which contains the generated verification key and a public function to verify a solution
+to the compiled program
+
+## zkSNARK Process
+
+This section will talk about the proof-creation process after the proving system is setup and what actually happens on the inside when we create that proof.
+
+### General Process
+
+ - Arithmetisation
+   - Flatten code
+   - Arithmetic Circuit
+ - Polynomials
+ - Polynomial Commitment Scheme (ability for the prover to have a polynomial without giving away too much information to the verifier)
+ - Cryptographic proving system (interactive part of the process - prover and verifier go back and forth, where verifier is checking the proof is correct by checking the polynomial) 
+ - Make non interactive (squash down the back and forth interactive process into a single step)
+
+### Transformations in SNARKS
+
+It is useful to think about the above process as a number of transformations. Basically, the process of creating a proof really is a process of doing some transformations.
+
+A diagram showing the transformations for early versions of SNARKS:
+
+Computation => Algebraic Circuit => R1CS (code to polynomial process) => QAP => Linear PCP => Linear Interactive Proof (proving part) => zkSNARK
+
+While we do all these transformations, we want to be sure we're not losing the integrity of what we're doing. 
+
+1. A High Level description / program is turned into an arithmetic circuit.
+
+The creator of the zkSNARK uses a high level language to specify the algorithm that
+constitutes and tests the proof.
+
+This high level specification is compiled into an arithmetic circuit.
+
+An arithmetic circuit can be thought of as similar to a physical electrical circuit consisting of
+logical gates and wires. This circuit constrains the allowed inputs that will lead to a correct
+proof.
+
+2. Further Mathematical refinement
+   
+The circuit is then turned into a an R1CS, and then a series of formulae called a Quadratic
+Arithmetic Program (QAP) (Polynomial).
+
+The QAP is then further refined to ensure the privacy aspect of the process.
+
+The end result is a proof in the form of series of bytes that is given to the verifier. The verifier
+can pass this proof through a verifier function to receive a true or false result.
+
+There is no information in the proof that the verifier can use to learn any further information
+about the prover or their witness.
+
+### Transforming our code into a polynomial
+
+Lets look first at transforming the problem into a QAP, there are 3 steps:
+ - code flattening
+ - creation of an arithmetic circuit
+ - conversion to a rank-1 constraint system (R1CS)
+
+#### Code Flattening
+
+We are aiming to create arithmetic and / or boolean circuits from our code, so we change the high
+level language into a sequence of statements that are of two forms
+
+#### Arithmetic Circuit
+
+This is a collection of gates performing arithmetic operations.
+
+#### Rank 1 Constraint Systems
+
+Constraint languages can be viewed as a generalization of functional languages:
+
+ - everything is referentially transparent and side-effect free
+ - there is no ordering of constraints
+ - composing two R1CS programs just means that their constraints are simultaneously satisfied.
+
+The important thing to understand is that a R1CS is not a computer program, you are not asking it
+to produce a value from certain inputs. Instead, a R1CS is more of a verifier, it shows that an
+already complete computation is correct.
