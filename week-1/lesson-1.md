@@ -296,6 +296,7 @@ $Q(x)$ is a polynomial of degree $n − 1$.
 $Q(x)$ is simply the quotient obtained from the division process; since r is known to be a root of $P(x)$. It is known that the remainder must be zero.
 
 Note: Degree of $n$ means the highest power used on the polynomial $P(x)$.
+Note: Another thing to note is that the highest power i.e. degree in the polynomial is the number of roots the polynomial has. For example, $5x^2 - 6x + 1$ would have 2 roots since the term $5x^2$ is the highest power of 2 on variable $x$ in the equation.
 
 ### [3.8] Schwartz-Zippel Lemma
 
