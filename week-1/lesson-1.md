@@ -277,6 +277,8 @@ unbounded amount of information (think of them as a list of integers and this is
 Furthermore, a **single equation between polynomials can represent an unbounded number of
 equations between numbers**.
 
+The polynomial above only has three terms. The polynomials we use in ZK proving systems will probably have a million terms or more.
+
 #### [3.7.1] Roots of a polynomial
 
 For a polynomial $P$ of a single variable $x$ in a field $K$ and with coefficients in that field, the root $r$ of $P$ is an element of $K$ such that $P(r) = 0$.
