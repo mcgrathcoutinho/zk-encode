@@ -64,7 +64,7 @@ To be considered a group, this combination needs to have certain properties. Bel
   There exists an element e in G such that, for every element a in G, the equation e • a = a • e =
   a holds. Such an element is unique and thus one speaks of the identity element.
 4. Inverse element
-  For each a in G, there exists an element b in G, commonly denoted a−1 (or −a, if the operation
+  For each a in G, there exists an element b in G, commonly denoted $a^−1$ (or −a, if the operation
   is denoted "+"), such that a • b = b • a = e, where e is the identity element.
 
 **[2.3.1] Sub groups**
