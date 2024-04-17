@@ -1,6 +1,6 @@
 # zk-encode
 
-This repository contains my notes from the Q1 2024 ZK bootcamp by Encode Club.
+This repository contains my notes from the Q1 2024 ZK bootcamp by Encode Club. The notes are only focused on covering ZK theory and Starknet.
 
 ## [Week 1 - Introduction](./week-1/)
  - [Overview / Maths & Cryptography introduction](./week-1/lesson-1.md)
@@ -25,7 +25,3 @@ This repository contains my notes from the Q1 2024 ZK bootcamp by Encode Club.
  - STARK Theory
  - Cryptographic alternatives
  - Research and review
-
-## Week 5 - Sponsor week
-
-## Week 6 - Project week
