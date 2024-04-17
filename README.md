@@ -6,7 +6,7 @@ This repository contains my notes from the Q1 2024 ZK bootcamp by Encode Club.
  - [Overview / Maths & Cryptography introduction](./week-1/lesson-1.md)
  - [ZKP Theory / Zokrates](./week-1/lesson-2.md)
  - [Use Cases of ZKPs / L2](./week-1/lesson-3.md)
- - Introduction to Starknet / Cairo
+ - [Introduction to Starknet / Cairo](./week-1/lesson-4.md)
 
 ## Week 2 - Starknet and Cairo / Noir
  - Cairo
