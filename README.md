@@ -16,7 +16,7 @@ This repository contains my notes from the Q1 2024 ZK bootcamp by Encode Club. T
 
 ## Week 3 - Mina / DeFi / Circom
  - MINA / zkApps
- - zkEVM Solutions
+ - [zkEVM Solutions](./week-3/lesson-10.md)
  - Risc Zero / Circom
  - zkSNARKS Theory
 
