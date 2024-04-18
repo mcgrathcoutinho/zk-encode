@@ -101,3 +101,89 @@ There is a beta version available on mainnet.
 
 [Scroll Architecture](https://scroll.mirror.xyz/nDAbJbSIJdQIWqp9kn8J0MVS4s6pYBwHmK7keidQs-k)
 
+### Components
+
+The Sequencer provides a JSON-RPC interface and accepts L2 transactions. Every few seconds,
+it retrieves a batch of transactions from the L2 mempool and executes them to generate a new L2
+block and a new state root.
+
+Once a new block is generated, the Coordinator is notified and receives the execution trace of this
+block from the Sequencer.
+
+It then dispatches the execution trace to a randomly-selected Roller from the roller pool for proof
+generation.
+
+The Relayer watches the bridge and rollup contracts deployed on both Ethereum and Scroll. It has
+two main responsibilities.
+1. It monitors the rollup contract to keep track of the status of L2 blocks including their data
+availability and validity proof.
+2. It watches the deposit and withdraw events from the bridge contracts deployed on both
+Ethereum and Scroll and relays the messages from one side to the other.
+
+### Rollers - creating proofs
+
+The Rollers serve as provers in the network that are responsible for generating validity proofs for
+the zkRollup
+
+ - A Roller first converts the execution trace received from the Coordinator to circuit witnesses.
+ - It generates proofs for each of the zkEVM circuits.
+ - Finally, it uses proof aggregation to combine proofs from multiple zkEVM circuits into a
+single block proof.
+
+The Rollup contract on L1 receives L2 state roots and blocks from the Sequencer.
+
+It stores state roots in the Ethereum state and L2 block data as Ethereum calldata.
+
+This provides data availability for Scroll blocks and leverages the security of Ethereum to ensure
+that indexers including the Scroll Relayer can reconstruct L2 blocks.
+
+Once a block proof establishing the validity of an L2 block has been verified by the Rollup contract,
+the corresponding block is considered finalized on Scroll.
+
+L2 blocks in Scroll are generated, committed to base layer Ethereum, and finalized in the following
+sequence of steps:
+1. The Sequencer generates a sequence of blocks. For the i-th block, the Sequencer generates
+an execution trace T and sends it to the Coordinator. Meanwhile, it also submits the
+transaction data D as calldata to the Rollup contract on Ethereum for data availability and the
+resulting state roots and commitments to the transaction data to the Rollup contract as state.
+2. The Coordinator randomly selects a Roller to generate a validity proof for each block trace. To
+speed up the proof generation process, proofs for different blocks can be generated in parallel
+on different Rollers.
+3. After generating the block proof P for the i-th block, the Roller sends it back to the
+Coordinator. Every k blocks, the Coordinator dispatches an aggregation task to another Roller
+to aggregate k block proofs into a single aggregate proof A.
+4. Finally, the Coordinator submits the aggregate proof A to the Rollup contract to finalize L2
+blocks i+1 to i+k by verifying the aggregate proof against the state roots and transaction data
+commitments previously submitted to the rollup contract.
+
+### Scroll circuit design
+
+1. We need an accumulator to provide the proofs of storage, merkle trees can provide this
+2. The execution trace is needed to show the path that the execution took through the bytecode,
+as this would change because of jumps. This trace is then a witness provided to the circuit.
+3. Two proofs are used to show the execution is correct for each opcode
+4. Proof of fetching the data required for the opcode
+5. Proof that the opcode executed correctly
+
+Scroll are working with Ethereum on this, see this [repo](https://github.com/privacy-scaling-explorations/zkevm-circuits) for EVM circuit design, and this design
+[document](https://hackmd.io/Hy_nqH4yTOmjjS9nbOArgw?view) from Ethereum.
+
+[Mindset behind Scroll](https://hackmd.io/@yezhang/B167uMZRs)
+
+## Taiko
+
+[Type 1 ZK-EVM](https://taiko.mirror.xyz/w7NSKDeKfJoEy0p89I9feixKfdK-20JgWF9HZzxfeBo)
+
+[Taiko Docs](https://docs.taiko.xyz/start-here/getting-started)
+
+## Kakarot
+
+[Link](https://www.kakarot.org/#Understanding)
+
+## Linea
+
+[Link](https://linea.build/)
+
+
+
+
