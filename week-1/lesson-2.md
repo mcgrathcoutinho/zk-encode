@@ -205,11 +205,11 @@ It is useful to think about the above process as a number of transformations. Ba
 
 A diagram showing the transformations for early versions of SNARKS:
 
-Computation => Algebraic Circuit => R1CS (code to polynomial process) => QAP => Linear PCP => Linear Interactive Proof (proving part) => zkSNARK
+Computation => Algebraic Circuit => R1CS (code to polynomial process) => QAP (polynomial) => Linear PCP => Linear Interactive Proof (proving part) => zkSNARK
 
 While we do all these transformations, we want to be sure we're not losing the integrity of what we're doing. 
 
-1. A High Level description / program is turned into an arithmetic circuit.
+1. A High Level description / program is turned into an arithmetic circuit (normally it is a compiler doing this process e.g. Zokrates compiler).
 
 The creator of the zkSNARK uses a high level language to specify the algorithm that
 constitutes and tests the proof.
@@ -243,7 +243,29 @@ Lets look first at transforming the problem into a QAP, there are 3 steps:
 #### Code Flattening
 
 We are aiming to create arithmetic and / or boolean circuits from our code, so we change the high
-level language into a sequence of statements that are of two forms
+level language into a sequence of statements that are of two forms.
+
+x = y (where y can be a variable or a number)
+
+and
+
+x = y (op) z
+
+(where op can be +, -, ∗, / and y and z can be variables, numbers or themselves subexpressions).
+
+For example we go from,
+```
+def qeval(x):
+ y = x**3
+ return x + y + 5
+```
+to
+```
+sym_1 = x * x
+y = sym_1 * x
+sym_2 = y + x
+~out = sym_2 + 5
+```
 
 #### Arithmetic Circuit
 
@@ -260,3 +282,94 @@ Constraint languages can be viewed as a generalization of functional languages:
 The important thing to understand is that a R1CS is not a computer program, you are not asking it
 to produce a value from certain inputs. Instead, a R1CS is more of a verifier, it shows that an
 already complete computation is correct.
+
+[See Constrain Systems for ZK SNARKs](https://coders-errand.com/constraint-systems-for-zk-snarks/)
+
+The arithmetic circuit is a composition of multiplicative sub-circuits (a single multiplication gate and multiple addition gates). A rank 1 constraint system is a set of these subcircuits expressed as constraints, each of the form:
+
+$AXB = C$
+
+where $A, B, C$ are each linear combinations $c1·v1+ c2· v2+ ...$
+
+The $c_i$ are constant field elements, and the $v_i$ are instance or witness variables (or 1).
+
+$AXB = C$ doesn't mean $C$ is computed from $A$ and $B$ just that $A, B, C$ are consistent.
+
+More generally, an implementation of $x = f(a, b)$ doesnʼt mean that $x$ is computed from $a$ and $b$, just that $x$, $a$, and $b$ are consistent.
+
+Thus our R1CS contains:
+1. the constant 1
+2. all public inputs
+3. outputs of the function
+4. private inputs
+5. auxilliary variables
+
+The R1CS has:
+1. one constraint per gate;
+2. one constraint per circuit output.
+
+Example:
+
+Assume Peggy wants to prove to Victor that she knows $c1, c2, c3$ such that $(c1 ⋅ c2) ⋅ (c1 + c3) = 7$.
+
+A legal assignment for the circuit is of the form:
+
+$(c1, . . . , c5)$, where $c4 = c1 · c2$ and $c5 = c4 · (c1 + c3)$.
+
+### SNARK Process continued
+
+#### From R1CS to QAP
+
+The next step is taking this R1CS and converting it into QAP form, which implements the exact same logic except using polynomials instead of dot products.
+
+To create the polynomials we can use interpolation of the values in our R1CS. Then instead of checking the constraints in the R1CS individually, we can now check **all of the constraints at the same time** by doing the dot product check **on the polynomials**.
+
+Because in this case the dot product check is a series of additions and multiplications of polynomials, the result is itself going to be a polynomial. If the resulting polynomial,
+evaluated at every x coordinate that we used above to represent a logic gate, is equal to zero, then that means that all of the checks pass; if the resulting polynomial evaluated at at least one of the x coordinate representing a logic gate gives a nonzero value, then that means that the values going into and out of that logic gate are inconsistent.
+
+#### How having polynomials helps us
+
+We can change the problem into that of knowing a polynomial with certain properties
+[This paper](https://arxiv.org/pdf/1906.07221.pdf) gives a reasonable explanation of how the polynomials are used to prevent the prover 'cheating'. We converted a set of vectors into polynomials that generate them when evaluated at certain fixed points. We used these fixed points to generate a vanishing polynomial that divides any polynomial that evaluates to 0 at least on all those points. We created a new polynomial that summarizes all constraints and a particular assignment, and the consequence is that we can verify all constraints at once if we can divide that polynomial by the vanishing one without remainder. This division is complicated, but there are methods (the Fast Fourier Transform) that can perform it efficiently.
+
+From our QAP we have,
+
+![](./qapeqn.png)
+
+where L = represenation of left gates, R = represenation of right gates, O = represenation of output gates
+
+and we define the polynomial $P$,
+
+$P := L ⋅ R − O$ (derived from $L . R = O$ => $L . R - O = 0$, equal to 0 since polynomial should be zero for all of our gates).
+
+#### [Referring to Lesson 12](../week-3/lesson-12.md/#idealized-proving-system)
+
+Now we can start to do some of the techniques/properties discussed in Lesson 12 under the heading Idealized Proving system.
+
+Let's say the prover is effectively saying that they know a polynomial which satisfies the above equation $P := L ⋅ R − O$ where $P$ evaluates to 0 for all of these $L$, $R$ and $O$ gates. 
+
+The verifier is going to test (for all gates) this claim the prover is making with the help of these techniques/properties.
+
+### So how does the Verifier go on about performing this test?
+
+Defining the target polynomial:
+
+$V(x) := (x − 1) ⋅ (x − 2). . .,$
+
+This will be zero at the points that correspond to our gates, but the $P$ polynomial, having all the constraints information would be a some multiple of this if:
+ - it is also zero at those points
+ - to be zero at those points, L ⋅ R − O must equate to zero, which will only happen if our constraints are met
+
+So we want $V$ to divide $P$ with no remainder, which would show that $P$ is indeed zero at the points.
+
+If Peggy has a satisfying assignment it means that, defining $L,R,O,P$ as above, there exists a polynomial $P′$ such that:
+
+$P = P′.V$
+
+Suppose now that Peggy doesnʼt have a satisfying witness, but she still constructs $L, R, O, P$ as above from some unsatisfying assignment $(c1,…,cm)(c1,…,cm)$. Then we are guaranteed that $V$ does not divide $P$.
+
+This means that for any polynomial $V$ of degree at most d − 2, P and $L, R, O, V$ will be different polynomials. Note that $P$ here is of degree at most 2(d − 1), $L, R, O$ here are of degree at most d − 1 and $V$ here is degree at most d − 2.
+
+Remember the Schwartz-Zippel Lemma tells us that two different polynomials of degree at most d can agree on at most d points.
+
+From here onwards, Homomorphic Hiding can be further applied on the polynomials so that the prover does not learn about the verifier's randomness (when testing) and the verifier does not learn about prover's input.
