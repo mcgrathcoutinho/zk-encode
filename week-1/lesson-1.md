@@ -338,6 +338,12 @@ There is another way we can think of polynomials and that is through the points 
 
 If you didn't have the equation of a polynomial and only had the points it evaluates to, then you can work out the eqn of the polynomial through interpolation. A particular type of interpolation used is Lagrange interpolation. 
 
+If you have a set of points then doing a Lagrange interpolation on those points gives you a polynomial that passes through all of those points.
+
+If you have two points on a plane, you can define a single straight line that passes through both, for 3 points, a single 2nd-degree curve(e.g. $5x^2 + 2x + 1$) will go through them etc. For n points, you can create a n-1 degree polynomial that will go through all of the points.
+
+(We can use this in all sorts of interesting schemes as well as zkps)
+
 ### [3.11] Represenations of Polynomials
 
 We effectively have 2 ways to represent polynomials:
