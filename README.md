@@ -21,7 +21,7 @@ This repository contains my notes from the Q1 2024 ZK bootcamp by Encode Club. T
  - [zkSNARKS Theory](./week-3/lesson-12.md)
 
 ## Week 4 - Theory and Cryptography
- - zkML / PLONK
- - STARK Theory
+ - [STARK Theory](./week-4/lesson-13.md)
  - Cryptographic alternatives
+ - Identity solutions / zkML
  - Research and review
